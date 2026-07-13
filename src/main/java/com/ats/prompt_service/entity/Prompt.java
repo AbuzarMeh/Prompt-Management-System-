@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -11,32 +13,41 @@ import org.hibernate.annotations.UuidGenerator;
 
 @Entity
 @Table(name = "prompts")
+@Schema(name = "Prompt", description = "Prompt stored in the service")
 public class Prompt {
 
     @Id
     @UuidGenerator
+    @Schema(description = "Unique prompt identifier", example = "e1ab99b4-c624-475d-acb4-63715a6e7c9e", accessMode = Schema.AccessMode.READ_ONLY)
     private UUID id;
 
     @NotBlank(message = "Prompt name cannot be empty")
     @Size(max = 100, message = "Prompt name cannot exceed 100 characters")
     @Column(nullable = false)
+    @Schema(description = "Prompt title", example = "Write a concise project summary")
     private String name;
 
     @Size(max = 500, message = "Description cannot exceed 500 characters")
+    @Schema(description = "Optional prompt description", example = "Used for internal documentation drafts")
     private String description;
 
     @NotBlank(message = "Prompt content cannot be empty")
     @Column(columnDefinition = "TEXT", nullable = false)
+    @Schema(description = "Prompt content", example = "Summarize the project goals in 3 bullets.")
     private String content;
 
     @Size(max = 255, message = "Tags cannot exceed 255 characters")
+    @Schema(description = "Comma-separated tags", example = "writing,summary,internal")
     private String tags;
 
     @Size(max = 100, message = "Model target cannot exceed 100 characters")
+    @Schema(description = "Target model name", example = "gpt-4o-mini")
     private String modelTarget;
 
+    @Schema(description = "Creation timestamp", accessMode = Schema.AccessMode.READ_ONLY)
     private LocalDateTime createdAt;
 
+    @Schema(description = "Last update timestamp", accessMode = Schema.AccessMode.READ_ONLY)
     private LocalDateTime updatedAt;
 
     public Prompt() {

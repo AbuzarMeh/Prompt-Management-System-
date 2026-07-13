@@ -6,16 +6,28 @@ import com.ats.prompt_service.repository.PromptRepository;
 import com.ats.prompt_service.service.PromptService;
 import java.util.List;
 import java.util.UUID;
+import java.util.Map;
 import org.springframework.stereotype.Service;
+import jakarta.validation.ConstraintViolation;
+
+import jakarta.validation.Validator;
+import com.ats.prompt_service.exception.ValidationException;
+import jakarta.validation.ConstraintViolation;
+import java.util.HashMap;
+
 
 @Service
 public class PromptServiceImpl implements PromptService {
 
     private final PromptRepository promptRepository;
+    private final Validator validator;
 
     // Constructor Injection
-    public PromptServiceImpl(PromptRepository promptRepository) {
+    public PromptServiceImpl(PromptRepository promptRepository,
+                         Validator validator) {
+
         this.promptRepository = promptRepository;
+        this.validator = validator;
     }
 
     @Override
@@ -84,5 +96,56 @@ public class PromptServiceImpl implements PromptService {
         }
 
         promptRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean promptExists(UUID id) {
+        return promptRepository.existsById(id);
+    }
+
+    @Override
+    public Prompt patchPrompt(UUID id, Map<String, Object> updates) {
+
+        Prompt prompt = promptRepository.findById(id)
+                .orElseThrow(() ->
+                        new PromptNotFoundException("Prompt not found with id: " + id));
+
+        if (updates.containsKey("name")) {
+            prompt.setName((String) updates.get("name"));
+        }
+
+        if (updates.containsKey("description")) {
+            prompt.setDescription((String) updates.get("description"));
+        }
+
+        if (updates.containsKey("content")) {
+            prompt.setContent((String) updates.get("content"));
+        }
+
+        if (updates.containsKey("tags")) {
+            prompt.setTags((String) updates.get("tags"));
+        }
+
+        if (updates.containsKey("modelTarget")) {
+            prompt.setModelTarget((String) updates.get("modelTarget"));
+        }
+
+        var violations = validator.validate(prompt);
+
+if (!violations.isEmpty()) {
+
+    Map<String, String> errors = new java.util.HashMap<>();
+
+        for (ConstraintViolation<Prompt> violation : violations) {
+            errors.put(
+                    violation.getPropertyPath().toString(),
+                    violation.getMessage()
+            );
+        }
+
+        throw new ValidationException(errors);
+    }
+
+        return promptRepository.save(prompt);
     }
 }

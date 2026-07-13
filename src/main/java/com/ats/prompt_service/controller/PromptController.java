@@ -1,17 +1,31 @@
 package com.ats.prompt_service.controller;
 
 import com.ats.prompt_service.entity.Prompt;
+import com.ats.prompt_service.exception.ValidationException;
 import com.ats.prompt_service.service.PromptService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/prompts")
+@Tag(name = "Prompts", description = "Operations for managing prompt records")
 public class PromptController {
 
     private final PromptService promptService;
@@ -21,6 +35,11 @@ public class PromptController {
     }
 
     @PostMapping
+    @Operation(summary = "Create a prompt", description = "Creates a new prompt record and returns the saved entity.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Prompt created", content = @Content(schema = @Schema(implementation = Prompt.class))),
+            @ApiResponse(responseCode = "400", description = "Validation failed", content = @Content(schema = @Schema(implementation = Map.class)))
+    })
     public ResponseEntity<Prompt> createPrompt(
             @Valid @RequestBody Prompt prompt) {
 
@@ -32,7 +51,13 @@ public class PromptController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get a prompt by id", description = "Fetches a single prompt using its UUID.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Prompt found", content = @Content(schema = @Schema(implementation = Prompt.class))),
+            @ApiResponse(responseCode = "404", description = "Prompt not found", content = @Content(schema = @Schema(implementation = com.ats.prompt_service.exception.ErrorResponse.class)))
+    })
     public ResponseEntity<Prompt> getPromptById(
+            @Parameter(description = "Prompt UUID", example = "e1ab99b4-c624-475d-acb4-63715a6e7c9e")
             @PathVariable UUID id) {
 
         return ResponseEntity.ok(
@@ -41,7 +66,14 @@ public class PromptController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Replace a prompt", description = "Updates an existing prompt with the supplied payload.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Prompt updated", content = @Content(schema = @Schema(implementation = Prompt.class))),
+            @ApiResponse(responseCode = "400", description = "Validation failed", content = @Content(schema = @Schema(implementation = com.ats.prompt_service.exception.ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Prompt not found", content = @Content(schema = @Schema(implementation = com.ats.prompt_service.exception.ErrorResponse.class)))
+    })
     public ResponseEntity<Prompt> updatePrompt(
+            @Parameter(description = "Prompt UUID", example = "e1ab99b4-c624-475d-acb4-63715a6e7c9e")
             @PathVariable UUID id,
             @Valid @RequestBody Prompt prompt) {
 
@@ -49,9 +81,44 @@ public class PromptController {
                 promptService.updatePrompt(id, prompt)
         );
     }
+    @PatchMapping("/{id}")
+    @Operation(summary = "Partially update a prompt", description = "Applies partial field updates. Invalid field values return a 400 response.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Prompt updated", content = @Content(schema = @Schema(implementation = Prompt.class))),
+            @ApiResponse(responseCode = "400", description = "Validation failed", content = @Content(schema = @Schema(implementation = Map.class))),
+            @ApiResponse(responseCode = "404", description = "Prompt not found", content = @Content(schema = @Schema(implementation = com.ats.prompt_service.exception.ErrorResponse.class)))
+    })
+    public ResponseEntity<?> patchPrompt(
+            @Parameter(description = "Prompt UUID", example = "e1ab99b4-c624-475d-acb4-63715a6e7c9e")
+            @PathVariable UUID id,
+            @RequestBody Map<String, Object> updates) {
+
+        try {
+            return ResponseEntity.ok(promptService.patchPrompt(id, updates));
+        } catch (ValidationException ex) {
+            return ResponseEntity.badRequest().body(buildValidationErrorResponse(id, ex));
+        }
+    }
+
+    private Map<String, Object> buildValidationErrorResponse(UUID id, ValidationException ex) {
+        Map<String, Object> errorResponse = new LinkedHashMap<>();
+        errorResponse.put("timestamp", LocalDateTime.now());
+        errorResponse.put("status", HttpStatus.BAD_REQUEST.value());
+        errorResponse.put("error", HttpStatus.BAD_REQUEST.getReasonPhrase());
+        errorResponse.put("message", ex.getMessage());
+        errorResponse.put("path", "/api/prompts/" + id);
+        errorResponse.put("validationErrors", ex.getValidationErrors());
+        return errorResponse;
+    }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a prompt", description = "Deletes a prompt by UUID.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Prompt deleted"),
+            @ApiResponse(responseCode = "404", description = "Prompt not found", content = @Content(schema = @Schema(implementation = com.ats.prompt_service.exception.ErrorResponse.class)))
+    })
     public ResponseEntity<Void> deletePrompt(
+            @Parameter(description = "Prompt UUID", example = "e1ab99b4-c624-475d-acb4-63715a6e7c9e")
             @PathVariable UUID id) {
 
         promptService.deletePrompt(id);
@@ -60,6 +127,10 @@ public class PromptController {
     }
 
     @GetMapping
+    @Operation(summary = "List prompts", description = "Returns all prompts or filters by tag and optional limit.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Prompt list", content = @Content(schema = @Schema(implementation = Prompt.class)))
+    })
     public ResponseEntity<List<Prompt>> getPrompts(
             @RequestParam(required = false) String tag,
             @RequestParam(required = false) Integer limit) {
@@ -69,6 +140,20 @@ public class PromptController {
         }
 
         return ResponseEntity.ok(promptService.getPrompts(tag, limit));
+    }
+
+    @GetMapping("/{id}/exists")
+    @Operation(summary = "Check prompt existence", description = "Returns whether a prompt exists for the supplied UUID.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Existence check result")
+    })
+    public ResponseEntity<Map<String, Boolean>> promptExists(@PathVariable UUID id) {
+
+        boolean exists = promptService.promptExists(id);
+
+        return ResponseEntity.ok(
+                Collections.singletonMap("exists", exists)
+        );
     }
 
 }
