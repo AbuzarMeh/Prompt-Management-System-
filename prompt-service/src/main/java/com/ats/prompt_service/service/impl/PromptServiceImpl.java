@@ -35,9 +35,20 @@ public class PromptServiceImpl implements PromptService {
         return promptRepository.save(prompt);
     }
 
+    // @Override
+    // public List<Prompt> getAllPrompts() {
+    //     return promptRepository.findAll();
+    // }
     @Override
     public List<Prompt> getAllPrompts() {
-        return promptRepository.findAll();
+
+        List<Prompt> prompts = promptRepository.findAll();
+
+        System.out.println("Total prompts = " + prompts.size());
+
+        prompts.forEach(System.out::println);
+
+        return prompts;
     }
 
     @Override

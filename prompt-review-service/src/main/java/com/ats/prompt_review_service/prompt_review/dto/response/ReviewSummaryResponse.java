@@ -1,4 +1,4 @@
-package com.ats.prompt_review_service.prompt_review.dto;
+package com.ats.prompt_review_service.prompt_review.dto.response;
 
 import java.util.List;
 import java.util.UUID;

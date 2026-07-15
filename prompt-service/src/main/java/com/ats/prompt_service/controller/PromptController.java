@@ -1,5 +1,6 @@
 package com.ats.prompt_service.controller;
 
+import com.ats.prompt_service.dto.response.PromptResponse;
 import com.ats.prompt_service.entity.Prompt;
 import com.ats.prompt_service.exception.ValidationException;
 import com.ats.prompt_service.service.PromptService;
@@ -53,16 +54,27 @@ public class PromptController {
     @GetMapping("/{id}")
     @Operation(summary = "Get a prompt by id", description = "Fetches a single prompt using its UUID.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Prompt found", content = @Content(schema = @Schema(implementation = Prompt.class))),
+            @ApiResponse(responseCode = "200", description = "Prompt found", content = @Content(schema = @Schema(implementation = PromptResponse.class))),
             @ApiResponse(responseCode = "404", description = "Prompt not found", content = @Content(schema = @Schema(implementation = com.ats.prompt_service.exception.ErrorResponse.class)))
     })
-    public ResponseEntity<Prompt> getPromptById(
+    public ResponseEntity<PromptResponse> getPromptById(
             @Parameter(description = "Prompt UUID", example = "e1ab99b4-c624-475d-acb4-63715a6e7c9e")
             @PathVariable UUID id) {
 
-        return ResponseEntity.ok(
-                promptService.getPromptById(id)
-        );
+        Prompt p = promptService.getPromptById(id);
+
+        PromptResponse response = PromptResponse.builder()
+                .id(p.getId())
+                .name(p.getName())
+                .description(p.getDescription())
+                .content(p.getContent())
+                .tags(p.getTags())
+                .modelTarget(p.getModelTarget())
+                .createdAt(p.getCreatedAt())
+                .updatedAt(p.getUpdatedAt())
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")

@@ -1,16 +1,15 @@
 package com.ats.prompt_review_service.prompt_review.service.impl;
 
 import com.ats.prompt_review_service.prompt_review.client.PromptServiceClient;
-import com.ats.prompt_review_service.prompt_review.dto.CreateReviewRequest;
-import com.ats.prompt_review_service.prompt_review.dto.PromptResponse;
-import com.ats.prompt_review_service.prompt_review.dto.ReviewSummaryResponse;
+import com.ats.prompt_review_service.prompt_review.dto.request.CreateReviewRequest;
+import com.ats.prompt_review_service.prompt_review.dto.response.PromptResponse;
+import com.ats.prompt_review_service.prompt_review.dto.response.ReviewSummaryResponse;
 import com.ats.prompt_review_service.prompt_review.entity.Review;
 import com.ats.prompt_review_service.prompt_review.exception.ReviewNotFoundException;
 import com.ats.prompt_review_service.prompt_review.repository.ReviewFileRepository;
 import com.ats.prompt_review_service.prompt_review.service.ReviewService;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -30,7 +29,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Review createReview(CreateReviewRequest request) throws IOException {
+        public Review createReview(CreateReviewRequest request) {
 
         PromptResponse prompt =
                 promptServiceClient.getPrompt(request.getPromptId());
@@ -49,7 +48,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<Review> getAllReviews(UUID promptId) throws IOException {
+        public List<Review> getAllReviews(UUID promptId) {
 
         if (promptId == null) {
             return reviewRepository.findAll();
@@ -59,7 +58,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Review getReviewById(UUID id) throws IOException {
+        public Review getReviewById(UUID id) {
 
         return reviewRepository.findById(id)
                 .orElseThrow(() ->
@@ -69,8 +68,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public ReviewSummaryResponse getSummary(UUID promptId)
-            throws IOException {
+        public ReviewSummaryResponse getReviewSummary(UUID promptId) {
 
         List<Review> reviews =
                 reviewRepository.findByPromptId(promptId);

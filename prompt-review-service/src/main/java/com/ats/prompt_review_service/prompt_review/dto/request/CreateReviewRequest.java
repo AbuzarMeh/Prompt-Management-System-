@@ -1,4 +1,4 @@
-package com.ats.prompt_review_service.prompt_review.dto;
+package com.ats.prompt_review_service.prompt_review.dto.request;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

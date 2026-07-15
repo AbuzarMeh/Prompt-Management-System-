@@ -1,7 +1,7 @@
 package com.ats.prompt_review_service.prompt_review.controller;
 
-import com.ats.prompt_review_service.prompt_review.dto.CreateReviewRequest;
-import com.ats.prompt_review_service.prompt_review.dto.ReviewSummaryResponse;
+import com.ats.prompt_review_service.prompt_review.dto.request.CreateReviewRequest;
+import com.ats.prompt_review_service.prompt_review.dto.response.ReviewSummaryResponse;
 import com.ats.prompt_review_service.prompt_review.entity.Review;
 import com.ats.prompt_review_service.prompt_review.service.ReviewService;
 import jakarta.validation.Valid;
@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,20 +24,16 @@ public class ReviewController {
 
     @PostMapping
     public ResponseEntity<Review> createReview(
-            @Valid @RequestBody CreateReviewRequest request)
-            throws IOException {
+            @Valid @RequestBody CreateReviewRequest request) {
 
         Review review = reviewService.createReview(request);
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(review);
+        return ResponseEntity.status(HttpStatus.CREATED).body(review);
     }
 
     @GetMapping
     public ResponseEntity<List<Review>> getReviews(
-            @RequestParam(required = false) UUID promptId)
-            throws IOException {
+            @RequestParam(required = false) UUID promptId) {
 
         return ResponseEntity.ok(
                 reviewService.getAllReviews(promptId)
@@ -47,8 +42,7 @@ public class ReviewController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Review> getReview(
-            @PathVariable UUID id)
-            throws IOException {
+            @PathVariable UUID id) {
 
         return ResponseEntity.ok(
                 reviewService.getReviewById(id)
@@ -57,12 +51,10 @@ public class ReviewController {
 
     @GetMapping("/{promptId}/summary")
     public ResponseEntity<ReviewSummaryResponse> getSummary(
-            @PathVariable UUID promptId)
-            throws IOException {
+            @PathVariable UUID promptId) {
 
         return ResponseEntity.ok(
-                reviewService.getSummary(promptId)
+                reviewService.getReviewSummary(promptId)
         );
     }
-
 }

@@ -30,47 +30,62 @@ public class ReviewFileRepository {
         this.objectMapper.registerModule(new JavaTimeModule());
     }
 
-    public Review save(Review review) throws IOException {
+    public Review save(Review review) {
 
-        Path file = storagePath.resolve(review.getId() + ".json");
+        try {
+            Path file = storagePath.resolve(review.getId() + ".json");
 
-        objectMapper.writeValue(file.toFile(), review);
+            objectMapper.writeValue(file.toFile(), review);
 
-        return review;
-    }
+            return review;
 
-    public Optional<Review> findById(UUID id) throws IOException {
-
-        Path file = storagePath.resolve(id + ".json");
-
-        if (!Files.exists(file)) {
-            return Optional.empty();
+        } catch (IOException ex) {
+            throw new RuntimeException("Failed to save review.", ex);
         }
-
-        Review review = objectMapper.readValue(file.toFile(), Review.class);
-
-        return Optional.of(review);
     }
 
-    public List<Review> findAll() throws IOException {
+    public Optional<Review> findById(UUID id) {
 
-        List<Review> reviews = new ArrayList<>();
+        try {
+            Path file = storagePath.resolve(id + ".json");
 
-        DirectoryStream<Path> files =
-                Files.newDirectoryStream(storagePath, "*.json");
+            if (!Files.exists(file)) {
+                return Optional.empty();
+            }
 
-        for (Path file : files) {
+            Review review = objectMapper.readValue(file.toFile(), Review.class);
 
-            Review review =
-                    objectMapper.readValue(file.toFile(), Review.class);
+            return Optional.of(review);
 
-            reviews.add(review);
+        } catch (IOException ex) {
+            throw new RuntimeException("Failed to read review.", ex);
         }
-
-        return reviews;
     }
 
-    public List<Review> findByPromptId(UUID promptId) throws IOException {
+    public List<Review> findAll() {
+
+        try {
+
+            List<Review> reviews = new ArrayList<>();
+
+            DirectoryStream<Path> files =
+                    Files.newDirectoryStream(storagePath, "*.json");
+
+            for (Path file : files) {
+
+                reviews.add(
+                        objectMapper.readValue(file.toFile(), Review.class)
+                );
+            }
+
+            return reviews;
+
+        } catch (IOException ex) {
+            throw new RuntimeException("Failed to load reviews.", ex);
+        }
+    }
+
+    public List<Review> findByPromptId(UUID promptId) {
 
         List<Review> filtered = new ArrayList<>();
 
