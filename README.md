@@ -118,7 +118,51 @@ cd prompt-review-service
 
 ---
 
-### 6. Verifying the Setup (Smoke Test)
+### 6. Running the Frontend
+
+The React frontend provides a user-friendly workspace for managing prompts and reviews. It runs on Vite and is located in the `frontend/` directory.
+
+#### Prerequisites
+
+- Node.js 20+ (includes npm)
+- Both backend services running: `prompt-service` on port `8000` and `prompt-review-service` on port `8001`
+
+#### Start the frontend
+
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+
+If PowerShell blocks `npm` scripts on your system, use:
+
+```powershell
+npm.cmd install
+npm.cmd run dev
+```
+
+Open the local address printed by Vite (usually `http://localhost:5173`). During development, Vite forwards requests automatically:
+
+| Frontend request | Backend target |
+|---|---|
+| `/api/prompts` | `http://localhost:8000` |
+| `/api/reviews` | `http://localhost:8001` |
+
+The app supports creating, searching, editing, and deleting prompts, as well as adding reviews and seeing feedback summaries for each prompt.
+
+#### Production build
+
+```powershell
+cd frontend
+npm run build
+```
+
+The compiled static files will be created in `frontend/dist/`.
+
+---
+
+### 7. Verifying the Setup (Smoke Test)
 
 Once both services are running, verify their communication by running the following commands.
 
