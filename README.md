@@ -21,36 +21,162 @@ A two-service Spring Boot microservice system for creating, managing, and review
 
 ---
 
-## Prerequisites
+## Initial Setup Guide
 
-- Java 17+ (review service requires 17; prompt service uses 21)
-- Maven 3.8+
+Follow this guide to set up the repository for the first time.
+
+### 1. Prerequisites
+
+Ensure you have the following installed on your machine:
+- **Java Development Kit (JDK)**: JDK 17 or JDK 21 (Note: `prompt-service` uses JDK 21; `prompt-review-service` uses JDK 17). Ensure your `JAVA_HOME` environment variable points to your JDK installation.
+- **Maven**: (Optional) Maven 3.8+ is recommended, though both services contain the Maven Wrapper (`mvnw` / `mvnw.cmd`) to run Maven tasks without a global installation.
+- **HTTP Client**: cURL, Postman, or PowerShell for testing API endpoints.
 
 ---
 
-## Running the Services
+### 2. IDE Setup & Lombok Annotation Processing
 
-Both services are independent Spring Boot applications. Start each from its own directory.
+This repository uses **Lombok** to reduce boilerplate code (e.g., automatically generating getters, setters, builders, and constructors). To avoid IDE compilation errors like "Cannot find symbol builder()", configure annotation processing in your IDE:
 
-### 1. Prompt Service (start first)
+#### For IntelliJ IDEA
+1. Open IntelliJ IDEA and import/open the root folder or individual projects (`prompt-service` and `prompt-review-service`) as Maven projects.
+2. Open Settings/Preferences (`Ctrl + Alt + S` on Windows/Linux, `Cmd + ,` on macOS).
+3. Navigate to **Build, Execution, Deployment > Compiler > Annotation Processors**.
+4. Check the box **"Enable annotation processing"**.
+5. Ensure the Lombok plugin is installed and enabled (bundled by default in recent IntelliJ versions).
+6. Click **Apply** and then **OK**.
 
+#### For VS Code
+1. Install the **Extension Pack for Java** (by Microsoft).
+2. Install the **Lombok Annotations Support for VS Code** (by Gabrielbb).
+3. VS Code will automatically detect Lombok and configure compilation.
+
+---
+
+### 3. Initial Build & Dependency Resolution
+
+Before launching the applications, compile and package the services to download all necessary dependencies and verify that Lombok classes generate successfully.
+
+#### On Windows (PowerShell or Command Prompt)
+```powershell
+# Build prompt-service
+cd prompt-service
+.\mvnw.cmd clean install -DskipTests
+cd ..
+
+# Build prompt-review-service
+cd prompt-review-service
+.\mvnw.cmd clean install -DskipTests
+cd ..
+```
+
+#### On Linux or macOS
+```bash
+# Build prompt-service
+cd prompt-service
+chmod +x mvnw
+./mvnw clean install -DskipTests
+cd ..
+
+# Build prompt-review-service
+cd prompt-review-service
+chmod +x mvnw
+./mvnw clean install -DskipTests
+cd ..
+```
+
+---
+
+### 4. Database Setup
+
+No external database installation (like PostgreSQL or MySQL) is required:
+- `prompt-service` uses an embedded **SQLite** database (`prompt_manager.db`).
+- Hibernate is configured to automatically create and update the database schema (`spring.jpa.hibernate.ddl-auto=update`) upon starting the service.
+- `prompt-review-service` uses local flat JSON file storage (automatically created under the `reviews/` directory).
+
+---
+
+### 5. Running the Services
+
+Both services are independent Spring Boot applications. Always start `prompt-service` first because `prompt-review-service` validates prompt existence with it.
+
+#### Step 1: Start Prompt Service
+Runs on **http://localhost:8000**
 ```bash
 cd prompt-service
-./mvnw spring-boot:run
+# On Windows: .\mvnw.cmd spring-boot:run
+# On Linux/macOS: ./mvnw spring-boot:run
 ```
 
-Runs on **http://localhost:8000**
-
-### 2. Prompt Review Service
-
+#### Step 2: Start Prompt Review Service
+Runs on **http://localhost:8001**
 ```bash
 cd prompt-review-service
-./mvnw spring-boot:run
+# On Windows: .\mvnw.cmd spring-boot:run
+# On Linux/macOS: ./mvnw spring-boot:run
 ```
 
-Runs on **http://localhost:8001**
+---
 
-> **Important:** Start `prompt-service` before `prompt-review-service`. The review service calls the prompt service on startup when processing requests — if prompt-service is down, review creation will fail with a 503.
+### 6. Verifying the Setup (Smoke Test)
+
+Once both services are running, verify their communication by running the following commands.
+
+#### Step A: Create a Prompt in `prompt-service`
+This creates a new prompt and returns its UUID.
+
+**Using PowerShell (Windows):**
+```powershell
+$body = @{
+  name = "Write a concise project summary"
+  description = "Used for internal documentation drafts"
+  content = "Summarize the project goals in 3 bullets."
+  tags = "writing,summary,internal"
+  modelTarget = "gpt-4o-mini"
+} | ConvertTo-Json -Depth 5
+$prompt = Invoke-RestMethod -Uri "http://localhost:8000/api/prompts" -Method Post -Body $body -ContentType "application/json"
+$prompt
+```
+
+**Using cURL (Linux/macOS):**
+```bash
+curl -X POST http://localhost:8000/api/prompts \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Write a concise project summary",
+    "description": "Used for internal documentation drafts",
+    "content": "Summarize the project goals in 3 bullets.",
+    "tags": "writing,summary,internal",
+    "modelTarget": "gpt-4o-mini"
+  }'
+```
+
+#### Step B: Review the Prompt in `prompt-review-service`
+This submits a review referencing the prompt ID created in Step A.
+
+**Using PowerShell (Windows):**
+```powershell
+$reviewBody = @{
+  promptId = $prompt.id
+  reviewerName = "Abuzar"
+  score = 5
+  feedback = "Excellent prompt, very clear instructions."
+} | ConvertTo-Json -Depth 5
+Invoke-RestMethod -Uri "http://localhost:8001/api/reviews" -Method Post -Body $reviewBody -ContentType "application/json"
+```
+
+**Using cURL (Linux/macOS):**
+*(Replace `<PROMPT_UUID>` with the exact ID returned in Step A)*
+```bash
+curl -X POST http://localhost:8001/api/reviews \
+  -H "Content-Type: application/json" \
+  -d '{
+    "promptId": "<PROMPT_UUID>",
+    "reviewerName": "Abuzar",
+    "score": 5,
+    "feedback": "Excellent prompt, very clear instructions."
+  }'
+```
 
 ---
 
