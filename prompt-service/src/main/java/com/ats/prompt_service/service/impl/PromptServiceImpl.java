@@ -1,5 +1,7 @@
 package com.ats.prompt_service.service.impl;
 
+import com.ats.prompt_service.dto.request.CreatePromptRequest;
+import com.ats.prompt_service.dto.request.UpdatePromptRequest;
 import com.ats.prompt_service.exception.PromptNotFoundException;
 import com.ats.prompt_service.entity.Prompt;
 import com.ats.prompt_service.repository.PromptRepository;
@@ -12,8 +14,6 @@ import jakarta.validation.ConstraintViolation;
 
 import jakarta.validation.Validator;
 import com.ats.prompt_service.exception.ValidationException;
-import jakarta.validation.ConstraintViolation;
-import java.util.HashMap;
 
 
 @Service
@@ -31,7 +31,14 @@ public class PromptServiceImpl implements PromptService {
     }
 
     @Override
-    public Prompt createPrompt(Prompt prompt) {
+    public Prompt createPrompt(CreatePromptRequest request) {
+        Prompt prompt = new Prompt();
+        prompt.setName(request.getName());
+        prompt.setDescription(request.getDescription());
+        prompt.setContent(request.getContent());
+        prompt.setTags(request.getTags());
+        prompt.setModelTarget(request.getModelTarget());
+
         return promptRepository.save(prompt);
     }
 
@@ -80,7 +87,7 @@ public class PromptServiceImpl implements PromptService {
     }
 
     @Override
-    public Prompt updatePrompt(UUID id, Prompt updatedPrompt) {
+    public Prompt updatePrompt(UUID id, UpdatePromptRequest request) {
 
         Prompt existingPrompt = promptRepository.findById(id)
         .orElseThrow(() ->
@@ -88,11 +95,11 @@ public class PromptServiceImpl implements PromptService {
                         "Prompt not found with id: " + id
                 ));
 
-        existingPrompt.setName(updatedPrompt.getName());
-        existingPrompt.setDescription(updatedPrompt.getDescription());
-        existingPrompt.setContent(updatedPrompt.getContent());
-        existingPrompt.setTags(updatedPrompt.getTags());
-        existingPrompt.setModelTarget(updatedPrompt.getModelTarget());
+        existingPrompt.setName(request.getName());
+        existingPrompt.setDescription(request.getDescription());
+        existingPrompt.setContent(request.getContent());
+        existingPrompt.setTags(request.getTags());
+        existingPrompt.setModelTarget(request.getModelTarget());
 
         return promptRepository.save(existingPrompt);
     }
