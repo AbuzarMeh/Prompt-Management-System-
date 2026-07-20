@@ -7,13 +7,12 @@ import com.ats.prompt_service.service.PromptService;
 import java.util.List;
 import java.util.UUID;
 import java.util.Map;
+import java.util.function.Consumer;
 import org.springframework.stereotype.Service;
 import jakarta.validation.ConstraintViolation;
 
 import jakarta.validation.Validator;
 import com.ats.prompt_service.exception.ValidationException;
-import jakarta.validation.ConstraintViolation;
-import java.util.HashMap;
 
 
 @Service
@@ -121,25 +120,11 @@ public class PromptServiceImpl implements PromptService {
                 .orElseThrow(() ->
                         new PromptNotFoundException("Prompt not found with id: " + id));
 
-        if (updates.containsKey("name")) {
-            prompt.setName((String) updates.get("name"));
-        }
-
-        if (updates.containsKey("description")) {
-            prompt.setDescription((String) updates.get("description"));
-        }
-
-        if (updates.containsKey("content")) {
-            prompt.setContent((String) updates.get("content"));
-        }
-
-        if (updates.containsKey("tags")) {
-            prompt.setTags((String) updates.get("tags"));
-        }
-
-        if (updates.containsKey("modelTarget")) {
-            prompt.setModelTarget((String) updates.get("modelTarget"));
-        }
+        applyStringUpdate(updates, "name", prompt::setName);
+        applyStringUpdate(updates, "description", prompt::setDescription);
+        applyStringUpdate(updates, "content", prompt::setContent);
+        applyStringUpdate(updates, "tags", prompt::setTags);
+        applyStringUpdate(updates, "modelTarget", prompt::setModelTarget);
 
         var violations = validator.validate(prompt);
 
@@ -158,5 +143,25 @@ if (!violations.isEmpty()) {
     }
 
         return promptRepository.save(prompt);
+    }
+
+    private void applyStringUpdate(
+            Map<String, Object> updates,
+            String field,
+            Consumer<String> setter) {
+
+        if (!updates.containsKey(field)) {
+            return;
+        }
+
+        Object value = updates.get(field);
+
+        if (value != null && !(value instanceof String)) {
+            throw new ValidationException(
+                    Map.of(field, field + " must be a string")
+            );
+        }
+
+        setter.accept((String) value);
     }
 }
