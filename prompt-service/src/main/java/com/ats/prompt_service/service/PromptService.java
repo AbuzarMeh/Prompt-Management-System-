@@ -1,5 +1,7 @@
 package com.ats.prompt_service.service;
 
+import com.ats.prompt_service.dto.request.CreatePromptRequest;
+import com.ats.prompt_service.dto.request.UpdatePromptRequest;
 import com.ats.prompt_service.entity.Prompt;
 
 import java.util.List;
@@ -9,7 +11,7 @@ import java.util.Map;
 
 public interface PromptService {
 
-    Prompt createPrompt(Prompt prompt);
+    Prompt createPrompt(CreatePromptRequest request);
 
     List<Prompt> getAllPrompts();
 
@@ -17,7 +19,7 @@ public interface PromptService {
     
     Prompt getPromptById(UUID id);
 
-    Prompt updatePrompt(UUID id, Prompt prompt);
+    Prompt updatePrompt(UUID id, UpdatePromptRequest request);
 
     void deletePrompt(UUID id);
 

@@ -1,5 +1,7 @@
 package com.ats.prompt_service.controller;
 
+import com.ats.prompt_service.dto.request.CreatePromptRequest;
+import com.ats.prompt_service.dto.request.UpdatePromptRequest;
 import com.ats.prompt_service.dto.response.PromptResponse;
 import com.ats.prompt_service.entity.Prompt;
 import com.ats.prompt_service.exception.ValidationException;
@@ -42,9 +44,9 @@ public class PromptController {
             @ApiResponse(responseCode = "400", description = "Validation failed", content = @Content(schema = @Schema(implementation = Map.class)))
     })
     public ResponseEntity<Prompt> createPrompt(
-            @Valid @RequestBody Prompt prompt) {
+            @Valid @RequestBody CreatePromptRequest request) {
 
-        Prompt createdPrompt = promptService.createPrompt(prompt);
+        Prompt createdPrompt = promptService.createPrompt(request);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -87,10 +89,10 @@ public class PromptController {
     public ResponseEntity<Prompt> updatePrompt(
             @Parameter(description = "Prompt UUID", example = "e1ab99b4-c624-475d-acb4-63715a6e7c9e")
             @PathVariable UUID id,
-            @Valid @RequestBody Prompt prompt) {
+            @Valid @RequestBody UpdatePromptRequest request) {
 
         return ResponseEntity.ok(
-                promptService.updatePrompt(id, prompt)
+                promptService.updatePrompt(id, request)
         );
     }
     @PatchMapping("/{id}")
