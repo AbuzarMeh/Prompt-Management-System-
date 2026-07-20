@@ -1,0 +1,24 @@
+# Build output
+**/target/
+frontend/node_modules/
+frontend/dist/
+
+# Local runtime data
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Local documents/artifacts
+ATS_Internship_Week1_PromptManager.pdf
+
+# IDE and OS metadata
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
