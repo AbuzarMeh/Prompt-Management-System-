@@ -4,11 +4,12 @@ import com.ats.prompt_review_service.prompt_review.dto.response.PromptResponse;
 import com.ats.prompt_review_service.prompt_review.exception.PromptNotFoundException;
 import com.ats.prompt_review_service.prompt_review.exception.ServiceUnavailableException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.http.ResponseEntity;
 
 import java.util.UUID;
 
@@ -24,47 +25,25 @@ public class PromptServiceClient {
         this.restTemplate = restTemplate;
     }
 
-    // public PromptResponse getPrompt(UUID promptId) {
-
-    //     String url = promptServiceUrl + "/" + promptId;
-    //     System.out.println("Calling URL: " + url);
-
-    //     try {
-    //         PromptResponse response =
-    //                 restTemplate.getForObject(url, PromptResponse.class);
-
-    //         System.out.println("Response received: " + response);
-
-    //         return response;
-
-    //     } catch (Exception ex) {
-
-    //         System.out.println("Exception Type: " + ex.getClass().getName());
-    //         ex.printStackTrace();
-
-    //         throw ex;
-    //     }
-    // }
     public PromptResponse getPrompt(UUID promptId) {
 
         String url = promptServiceUrl + "/" + promptId;
-        System.out.println("Calling URL: " + url);
 
         try {
+            return restTemplate.getForObject(url, PromptResponse.class);
+        } catch (HttpStatusCodeException ex) {
+            if (ex.getStatusCode().value() == HttpStatus.NOT_FOUND.value()) {
+                throw new PromptNotFoundException("Prompt not found with id: " + promptId);
+            }
 
-            PromptResponse response =
-                    restTemplate.getForObject(url, PromptResponse.class);
-
-            System.out.println("Response: " + response);
-
-            return response;
-
-        } catch (Exception ex) {
-
-            System.out.println("Exception class: " + ex.getClass().getName());
-            ex.printStackTrace();
-
-            throw ex;
+            throw new ServiceUnavailableException(
+                    "Prompt service returned " + ex.getStatusCode().value()
+                            + " for prompt id: " + promptId
+            );
+        } catch (ResourceAccessException ex) {
+            throw new ServiceUnavailableException("Prompt service is unavailable.");
+        } catch (RestClientException ex) {
+            throw new ServiceUnavailableException("Prompt service request failed.");
         }
     }
 }

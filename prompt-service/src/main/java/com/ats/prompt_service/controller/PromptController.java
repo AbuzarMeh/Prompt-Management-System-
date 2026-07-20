@@ -4,7 +4,6 @@ import com.ats.prompt_service.dto.request.CreatePromptRequest;
 import com.ats.prompt_service.dto.request.UpdatePromptRequest;
 import com.ats.prompt_service.dto.response.PromptResponse;
 import com.ats.prompt_service.entity.Prompt;
-import com.ats.prompt_service.exception.ValidationException;
 import com.ats.prompt_service.service.PromptService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -19,9 +18,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -107,22 +104,7 @@ public class PromptController {
             @PathVariable UUID id,
             @RequestBody Map<String, Object> updates) {
 
-        try {
-            return ResponseEntity.ok(promptService.patchPrompt(id, updates));
-        } catch (ValidationException ex) {
-            return ResponseEntity.badRequest().body(buildValidationErrorResponse(id, ex));
-        }
-    }
-
-    private Map<String, Object> buildValidationErrorResponse(UUID id, ValidationException ex) {
-        Map<String, Object> errorResponse = new LinkedHashMap<>();
-        errorResponse.put("timestamp", LocalDateTime.now());
-        errorResponse.put("status", HttpStatus.BAD_REQUEST.value());
-        errorResponse.put("error", HttpStatus.BAD_REQUEST.getReasonPhrase());
-        errorResponse.put("message", ex.getMessage());
-        errorResponse.put("path", "/api/prompts/" + id);
-        errorResponse.put("validationErrors", ex.getValidationErrors());
-        return errorResponse;
+        return ResponseEntity.ok(promptService.patchPrompt(id, updates));
     }
 
     @DeleteMapping("/{id}")
