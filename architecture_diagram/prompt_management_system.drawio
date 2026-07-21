@@ -1,0 +1,119 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Page-1" id="Qy2QTTC7peODN8ImGWna">
+    <mxGraphModel dx="1935" dy="2143" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="W2oNZioOZXqkSplyH7-h-1" parent="1" style="text;whiteSpace=wrap;html=1;" value="&#xa;  &#xa;    &#xa;      &#xa;        &#xa;        &#xa;&#xa;        &#xa;        &#xa;          &#xa;        &#xa;&#xa;        &#xa;        &#xa;          &#xa;        &#xa;&#xa;        &#xa;        &#xa;          &#xa;        &#xa;&#xa;        &#xa;          &#xa;        &#xa;&#xa;        &#xa;          &#xa;        &#xa;&#xa;        &#xa;          &#xa;        &#xa;&#xa;        &#xa;          &#xa;        &#xa;&#xa;        &#xa;          &#xa;        &#xa;&#xa;        &#xa;          &#xa;        &#xa;&#xa;        &#xa;        &#xa;          &#xa;        &#xa;&#xa;        &#xa;          &#xa;        &#xa;&#xa;        &#xa;          &#xa;        &#xa;&#xa;        &#xa;          &#xa;        &#xa;&#xa;        &#xa;          &#xa;        &#xa;&#xa;        &#xa;          &#xa;        &#xa;&#xa;        &#xa;          &#xa;        &#xa;&#xa;        &#xa;          &#xa;        &#xa;&#xa;        &#xa;        &#xa;          &#xa;        &#xa;        &#xa;          &#xa;        &#xa;&#xa;        &#xa;          &#xa;        &#xa;        &#xa;          &#xa;        &#xa;&#xa;        &#xa;        &#xa;          &#xa;        &#xa;        &#xa;          &#xa;        &#xa;        &#xa;          &#xa;        &#xa;&#xa;        &#xa;        &#xa;          &#xa;        &#xa;        &#xa;          &#xa;        &#xa;        &#xa;          &#xa;        &#xa;        &#xa;          &#xa;        &#xa;&#xa;        &#xa;        &#xa;          &#xa;            &#xa;              &#xa;              &#xa;            &#xa;          &#xa;        &#xa;&#xa;        &#xa;          &#xa;            &#xa;              &#xa;              &#xa;            &#xa;          &#xa;        &#xa;&#xa;        &#xa;        &#xa;          &#xa;        &#xa;&#xa;        &#xa;          &#xa;        &#xa;&#xa;      &#xa;    &#xa;  &#xa;" vertex="1">
+          <mxGeometry height="2180" width="290" x="230" y="-20" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-2" parent="1" style="text;html=1;fontSize=22;fontStyle=1;align=center;" value="Prompt Management System — Architecture &amp; Workflow" vertex="1">
+          <mxGeometry height="40" width="800" x="360" y="-180" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;" value="Client / Consumer&#xa;(Swagger UI, Postman, Frontend)" vertex="1">
+          <mxGeometry height="60" width="260" x="580" y="-110" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=14;fillColor=#f8cecc;strokeColor=#b85450;" value="prompt-service  (Spring Boot 3.1.0 / Java 21)&#xa;Port 8000" vertex="1">
+          <mxGeometry height="420" width="480" x="120" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=12;" value="PromptController&#xa;/api/prompts" vertex="1">
+          <mxGeometry height="50" width="200" x="150" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=12;" value="PromptService (+ Impl)&#xa;Business Logic" vertex="1">
+          <mxGeometry height="50" width="200" x="150" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=12;" value="Prompt Entity&#xa;(JPA)" vertex="1">
+          <mxGeometry height="50" width="200" x="150" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-8" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;boundedLbl=1;" value="SQLite DB&#xa;prompt_manager.db" vertex="1">
+          <mxGeometry height="80" width="120" x="190" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;spacingLeft=8;fillColor=#ffffff;strokeColor=#b85450;fontSize=11;" value="Endpoints:&#xa;POST /api/prompts&#xa;GET /api/prompts/{id}&#xa;GET /api/prompts&#xa;PUT /api/prompts/{id}&#xa;PATCH /api/prompts/{id}&#xa;DELETE /api/prompts/{id}&#xa;GET /api/prompts/{id}/exists" vertex="1">
+          <mxGeometry height="150" width="200" x="380" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-10" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=12;" value="Exception Handling&#xa;(404 / 400 / 500)" vertex="1">
+          <mxGeometry height="50" width="200" x="380" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=14;fillColor=#d5e8d4;strokeColor=#82b366;" value="prompt-review-service  (Spring Boot 3.3.5 / Java 17)&#xa;Port 8001" vertex="1">
+          <mxGeometry height="480" width="480" x="920" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-12" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=12;" value="ReviewController&#xa;/api/reviews" vertex="1">
+          <mxGeometry height="50" width="200" x="950" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-13" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=12;" value="ReviewService (+ Impl)&#xa;Business Logic" vertex="1">
+          <mxGeometry height="50" width="200" x="950" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-14" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=12;" value="PromptServiceClient&#xa;(RestTemplate via RestClientConfig)" vertex="1">
+          <mxGeometry height="50" width="200" x="950" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-15" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=12;" value="ReviewFileRepository" vertex="1">
+          <mxGeometry height="50" width="200" x="950" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-16" parent="1" style="shape=folder;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" value="JSON File Storage&#xa;/reviews/*.json" vertex="1">
+          <mxGeometry height="60" width="140" x="990" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-17" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;spacingLeft=8;fillColor=#ffffff;strokeColor=#82b366;fontSize=11;" value="Endpoints:&#xa;POST /api/reviews&#xa;GET /api/reviews&#xa;GET /api/reviews?promptId=&#xa;GET /api/reviews/{id}&#xa;GET /api/reviews/{promptId}/summary" vertex="1">
+          <mxGeometry height="130" width="200" x="1180" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-18" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=12;" value="Exception Handling&#xa;(404 / 400 / 500 / 503)" vertex="1">
+          <mxGeometry height="50" width="200" x="1180" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-19" edge="1" parent="1" source="W2oNZioOZXqkSplyH7-h-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;" target="W2oNZioOZXqkSplyH7-h-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-20" parent="1" style="text;html=1;fontSize=11;align=center;" value="1. Create/Manage Prompt" vertex="1">
+          <mxGeometry height="20" width="220" x="290" y="-50" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-21" edge="1" parent="1" source="W2oNZioOZXqkSplyH7-h-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;" target="W2oNZioOZXqkSplyH7-h-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-22" parent="1" style="text;html=1;fontSize=11;align=center;" value="2. Submit Review (promptId)" vertex="1">
+          <mxGeometry height="20" width="220" x="860" y="-50" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-23" edge="1" parent="1" source="W2oNZioOZXqkSplyH7-h-5" style="html=1;fontSize=11;" target="W2oNZioOZXqkSplyH7-h-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-24" edge="1" parent="1" source="W2oNZioOZXqkSplyH7-h-6" style="html=1;fontSize=11;" target="W2oNZioOZXqkSplyH7-h-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-25" edge="1" parent="1" source="W2oNZioOZXqkSplyH7-h-7" style="html=1;fontSize=11;" target="W2oNZioOZXqkSplyH7-h-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-26" edge="1" parent="1" source="W2oNZioOZXqkSplyH7-h-12" style="html=1;fontSize=11;" target="W2oNZioOZXqkSplyH7-h-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-27" edge="1" parent="1" source="W2oNZioOZXqkSplyH7-h-13" style="html=1;fontSize=11;" target="W2oNZioOZXqkSplyH7-h-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-28" edge="1" parent="1" source="W2oNZioOZXqkSplyH7-h-13" style="html=1;fontSize=11;" target="W2oNZioOZXqkSplyH7-h-15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-29" edge="1" parent="1" source="W2oNZioOZXqkSplyH7-h-15" style="html=1;fontSize=11;" target="W2oNZioOZXqkSplyH7-h-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-30" edge="1" parent="1" source="W2oNZioOZXqkSplyH7-h-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#d79b00;fontColor=#d79b00;fontSize=12;fontStyle=1;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" target="W2oNZioOZXqkSplyH7-h-5" value="3. GET /api/prompts/{id}&#xa;(validate prompt exists)">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="860" y="235" />
+              <mxPoint x="660" y="95" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-31" edge="1" parent="1" source="W2oNZioOZXqkSplyH7-h-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#d79b00;fontColor=#d79b00;fontSize=12;fontStyle=1;dashed=1;exitX=1;exitY=0.7;entryX=0;entryY=0.7;" target="W2oNZioOZXqkSplyH7-h-14" value="4. Returns Prompt JSON&#xa;(200 OK / 404)">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="660" y="115" />
+              <mxPoint x="860" y="255" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-32" parent="1" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=8;fontStyle=1;fontSize=13;fillColor=#fff2cc;strokeColor=#d6b656;" value="Workflow Notes" vertex="1">
+          <mxGeometry height="200" width="1280" x="120" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="W2oNZioOZXqkSplyH7-h-33" parent="1" style="text;html=1;align=left;verticalAlign=top;fontSize=12;spacingLeft=10;spacingTop=6;" value="1. Start prompt-service FIRST (port 8000), then prompt-review-service (port 8001) — review service depends on prompt-service being reachable.&#xa;2. Client creates a Prompt via POST /api/prompts on prompt-service; it is persisted in SQLite (prompt_manager.db) and returns an auto-generated UUID id.&#xa;3. Client submits a Review (POST /api/reviews) to prompt-review-service, including the promptId, reviewerName, score (1-5), and feedback.&#xa;4. ReviewController delegates to ReviewService, which uses PromptServiceClient (RestTemplate) to call GET /api/prompts/{id} on prompt-service to validate the prompt exists.&#xa;5. If the prompt exists (200 OK), review-service captures a promptSnapshot (copy of the prompt&#39;s content at review time), assigns an id and reviewedAt timestamp, and persists the Review as a JSON file via ReviewFileRepository (/reviews/ directory).&#xa;6. If prompt-service is unreachable, the review creation fails with 503. If the promptId does not exist, a 404 is returned instead of a review being created.&#xa;7. Clients can then query reviews (all, by promptId, by review id) or fetch an aggregated summary (GET /api/reviews/{promptId}/summary) with totalReviews, averageScore, and feedback list." vertex="1">
+          <mxGeometry height="165" width="1260" x="120" y="517.5" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

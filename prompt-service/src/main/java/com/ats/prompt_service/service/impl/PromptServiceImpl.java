@@ -1,5 +1,7 @@
 package com.ats.prompt_service.service.impl;
 
+import com.ats.prompt_service.dto.request.CreatePromptRequest;
+import com.ats.prompt_service.dto.request.UpdatePromptRequest;
 import com.ats.prompt_service.exception.PromptNotFoundException;
 import com.ats.prompt_service.entity.Prompt;
 import com.ats.prompt_service.repository.PromptRepository;
@@ -7,13 +9,12 @@ import com.ats.prompt_service.service.PromptService;
 import java.util.List;
 import java.util.UUID;
 import java.util.Map;
+import java.util.function.Consumer;
 import org.springframework.stereotype.Service;
 import jakarta.validation.ConstraintViolation;
 
 import jakarta.validation.Validator;
 import com.ats.prompt_service.exception.ValidationException;
-import jakarta.validation.ConstraintViolation;
-import java.util.HashMap;
 
 
 @Service
@@ -31,7 +32,14 @@ public class PromptServiceImpl implements PromptService {
     }
 
     @Override
-    public Prompt createPrompt(Prompt prompt) {
+    public Prompt createPrompt(CreatePromptRequest request) {
+        Prompt prompt = new Prompt();
+        prompt.setName(request.getName());
+        prompt.setDescription(request.getDescription());
+        prompt.setContent(request.getContent());
+        prompt.setTags(request.getTags());
+        prompt.setModelTarget(request.getModelTarget());
+
         return promptRepository.save(prompt);
     }
 
@@ -80,7 +88,7 @@ public class PromptServiceImpl implements PromptService {
     }
 
     @Override
-    public Prompt updatePrompt(UUID id, Prompt updatedPrompt) {
+    public Prompt updatePrompt(UUID id, UpdatePromptRequest request) {
 
         Prompt existingPrompt = promptRepository.findById(id)
         .orElseThrow(() ->
@@ -88,11 +96,11 @@ public class PromptServiceImpl implements PromptService {
                         "Prompt not found with id: " + id
                 ));
 
-        existingPrompt.setName(updatedPrompt.getName());
-        existingPrompt.setDescription(updatedPrompt.getDescription());
-        existingPrompt.setContent(updatedPrompt.getContent());
-        existingPrompt.setTags(updatedPrompt.getTags());
-        existingPrompt.setModelTarget(updatedPrompt.getModelTarget());
+        existingPrompt.setName(request.getName());
+        existingPrompt.setDescription(request.getDescription());
+        existingPrompt.setContent(request.getContent());
+        existingPrompt.setTags(request.getTags());
+        existingPrompt.setModelTarget(request.getModelTarget());
 
         return promptRepository.save(existingPrompt);
     }
@@ -121,42 +129,47 @@ public class PromptServiceImpl implements PromptService {
                 .orElseThrow(() ->
                         new PromptNotFoundException("Prompt not found with id: " + id));
 
-        if (updates.containsKey("name")) {
-            prompt.setName((String) updates.get("name"));
-        }
-
-        if (updates.containsKey("description")) {
-            prompt.setDescription((String) updates.get("description"));
-        }
-
-        if (updates.containsKey("content")) {
-            prompt.setContent((String) updates.get("content"));
-        }
-
-        if (updates.containsKey("tags")) {
-            prompt.setTags((String) updates.get("tags"));
-        }
-
-        if (updates.containsKey("modelTarget")) {
-            prompt.setModelTarget((String) updates.get("modelTarget"));
-        }
+        applyStringUpdate(updates, "name", prompt::setName);
+        applyStringUpdate(updates, "description", prompt::setDescription);
+        applyStringUpdate(updates, "content", prompt::setContent);
+        applyStringUpdate(updates, "tags", prompt::setTags);
+        applyStringUpdate(updates, "modelTarget", prompt::setModelTarget);
 
         var violations = validator.validate(prompt);
 
-if (!violations.isEmpty()) {
+        if (!violations.isEmpty()) {
+            Map<String, String> errors = new java.util.HashMap<>();
 
-    Map<String, String> errors = new java.util.HashMap<>();
+            for (ConstraintViolation<Prompt> violation : violations) {
+                errors.put(
+                        violation.getPropertyPath().toString(),
+                        violation.getMessage()
+                );
+            }
 
-        for (ConstraintViolation<Prompt> violation : violations) {
-            errors.put(
-                    violation.getPropertyPath().toString(),
-                    violation.getMessage()
+            throw new ValidationException(errors);
+        }
+
+        return promptRepository.save(prompt);
+    }
+
+    private void applyStringUpdate(
+            Map<String, Object> updates,
+            String field,
+            Consumer<String> setter) {
+
+        if (!updates.containsKey(field)) {
+            return;
+        }
+
+        Object value = updates.get(field);
+
+        if (value != null && !(value instanceof String)) {
+            throw new ValidationException(
+                    Map.of(field, field + " must be a string")
             );
         }
 
-        throw new ValidationException(errors);
-    }
-
-        return promptRepository.save(prompt);
+        setter.accept((String) value);
     }
 }
