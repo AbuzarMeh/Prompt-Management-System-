@@ -1,16 +1,10 @@
 package com.ats.prompt_service.exception;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Map;
 
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
 @Schema(name = "ErrorResponse", description = "Standard API error payload")
 public class ErrorResponse {
 
@@ -31,5 +25,25 @@ public class ErrorResponse {
 
     @Schema(description = "Field-level validation errors", nullable = true)
     private Map<String, String> validationErrors;
+
+    public ErrorResponse() {
+    }
+
+    public ErrorResponse(LocalDateTime timestamp, int status, String error, String message,
+                         String path, Map<String, String> validationErrors) {
+        this.timestamp = timestamp;
+        this.status = status;
+        this.error = error;
+        this.message = message;
+        this.path = path;
+        this.validationErrors = validationErrors;
+    }
+
+    public LocalDateTime getTimestamp() { return timestamp; }
+    public int getStatus() { return status; }
+    public String getError() { return error; }
+    public String getMessage() { return message; }
+    public String getPath() { return path; }
+    public Map<String, String> getValidationErrors() { return validationErrors; }
 
 }

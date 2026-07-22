@@ -4,9 +4,6 @@ import com.ats.prompt_service.validation.PromptContentSafety;
 import jakarta.validation.constraints.AssertFalse;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
-
-@Data
 public class UpdatePromptRequest {
 
     @NotBlank(message = "Prompt name cannot be empty")
@@ -29,4 +26,15 @@ public class UpdatePromptRequest {
     public boolean isContentUnsafe() {
         return PromptContentSafety.isPotentiallyVulnerable(content);
     }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+    public String getContent() { return content; }
+    public void setContent(String content) { this.content = content; }
+    public String getTags() { return tags; }
+    public void setTags(String tags) { this.tags = tags; }
+    public String getModelTarget() { return modelTarget; }
+    public void setModelTarget(String modelTarget) { this.modelTarget = modelTarget; }
 }

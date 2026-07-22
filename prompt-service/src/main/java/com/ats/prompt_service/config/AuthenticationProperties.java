@@ -1,17 +1,19 @@
-package com.ats.prompt_service.dto.request;
+package com.ats.prompt_service.config;
 
-import jakarta.validation.constraints.NotBlank;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
-public class LoginRequest {
+@ConfigurationProperties(prefix = "app.auth")
+public class AuthenticationProperties {
 
-    @NotBlank(message = "Username is required.")
+    /**
+     * Configured application username.
+     */
     private String username;
 
-    @NotBlank(message = "Password is required.")
+    /**
+     * Configured application password.
+     */
     private String password;
-
-    public LoginRequest() {
-    }
 
     public String getUsername() {
         return username;
